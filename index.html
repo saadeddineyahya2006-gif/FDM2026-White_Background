@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Debate Board</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  color:white;
+  letter-spacing:0.5px;
+
+  background: linear-gradient(
+    135deg,
+    #7F42BD 0%,
+    #5E5BB2 45%,
+    #247365 100%
+  );
+}
+
+/* ===== LAYOUT ===== */
+.container{
+  display:grid;
+  grid-template-areas:
+    "top top top"
+    "left center right"
+    "bottom bottom bottom";
+  grid-template-columns: 1.2fr 1.6fr 1.2fr;
+  grid-template-rows: auto 1fr auto;
+  height:100vh;
+  padding:30px 50px 20px 50px;
+  box-sizing:border-box;
+}
+
+/* ===== TOP ===== */
+.top{
+  grid-area:top;
+  text-align:center;
+}
+
+#topic{
+  font-size:48px;
+  font-weight:bold;
+}
+
+/* ===== SIDES ===== */
+.side{
+  display:flex;
+  flex-direction:column;
+  background: rgba(255,255,255,0.08);
+  padding:25px 30px;
+  border-radius:20px;
+  backdrop-filter: blur(6px);
+  align-self:start; /* prevents stretching */
+}
+
+.left{
+  grid-area:left;
+  align-items:flex-start;
+  text-align:left;
+}
+
+.right{
+  grid-area:right;
+  align-items:flex-end;
+  text-align:right;
+}
+
+/* SCHOOL + TEAM */
+.header-block{
+  margin-bottom:25px;
+}
+
+.school{
+  font-size:36px;
+  font-weight:bold;
+}
+
+.team{
+  font-size:30px;
+  font-weight:bold;
+  margin-top:20px;
+}
+
+/* ROLES */
+.role{
+  font-size:22px;
+  margin:6px 0; /* SAME spacing as motions */
+}
+
+/* MOTIONS */
+.motions{
+  margin-top:30px;
+}
+
+.motions-title{
+  font-size:24px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.motion-line{
+  font-size:22px;
+  margin:6px 0; /* SAME spacing as roles */
+}
+
+.motions button{
+  margin-top:10px;
+}
+
+/* ===== CENTER ===== */
+.center{
+  grid-area:center;
+  text-align:center;
+}
+
+#timer{
+  font-size:100px;
+  font-weight:bold;
+  margin-bottom:25px;
+}
+
+/* LOGO (restored good spacing) */
+.center img{
+  max-width:420px;
+  display:block;
+  margin:40px auto 10px;
+}
+
+.hidden{
+  display:none;
+}
+
+/* ===== BOTTOM ===== */
+.bottom{
+  grid-area:bottom;
+  text-align:center;
+  margin-top:10px;
+}
+
+.bottom span{
+  margin:0 35px;
+  font-size:26px;
+  font-weight:bold;
+}
+
+/* ===== TIMER BUTTONS ===== */
+.timer-buttons{
+  position:absolute;
+  bottom:20px;
+  left:25px;
+  display:flex;
+  gap:10px;
+}
+
+.timer-buttons button{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  border:none;
+  font-size:14px;
+  background:#00000066;
+  color:white;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.timer-buttons button:hover{
+  background:#ffffff33;
+}
+</style>
+</head>
+
+<body spellcheck="false">
+
+<div class="container">
+
+  <div class="top">
+    <div id="topic" contenteditable="true">Debate Topic</div>
+  </div>
+
+  <div class="side left">
+    <div class="header-block">
+      <div class="school" contenteditable="true">School A</div>
+      <div class="team" contenteditable="true">Team A</div>
+    </div>
+
+    <div class="role">Head Speaker: <span contenteditable="true"></span></div>
+    <div class="role">Argumentator: <span contenteditable="true"></span></div>
+    <div class="role">Rebutter: <span contenteditable="true"></span></div>
+
+    <div class="motions">
+      <div class="motions-title">MOTIONS</div>
+      <div class="motion-line">Accepted: <span id="aAcc">0</span></div>
+      <div class="motion-line">Rejected: <span id="aRej">0</span></div>
+      <div class="motion-line">Total: <span id="aTot">0</span></div>
+
+      <button onclick="accept('A')">Accept</button>
+      <button onclick="reject('A')">Reject</button>
+    </div>
+  </div>
+
+  <div class="center">
+    <div id="timer" contenteditable="true">50:00</div>
+    <input type="file" id="imageInput" accept="image/*">
+    <img id="logo">
+  </div>
+
+  <div class="side right">
+    <div class="header-block">
+      <div class="school" contenteditable="true">School B</div>
+      <div class="team" contenteditable="true">Team B</div>
+    </div>
+
+    <div class="role">Head Speaker: <span contenteditable="true"></span></div>
+    <div class="role">Argumentator: <span contenteditable="true"></span></div>
+    <div class="role">Rebutter: <span contenteditable="true"></span></div>
+
+    <div class="motions">
+      <div class="motions-title">MOTIONS</div>
+      <div class="motion-line">Accepted: <span id="bAcc">0</span></div>
+      <div class="motion-line">Rejected: <span id="bRej">0</span></div>
+      <div class="motion-line">Total: <span id="bTot">0</span></div>
+
+      <button onclick="accept('B')">Accept</button>
+      <button onclick="reject('B')">Reject</button>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <span contenteditable="true">Jury 1</span>
+    <span contenteditable="true">Jury 2</span>
+    <span contenteditable="true">Jury 3</span>
+  </div>
+
+</div>
+
+<div class="timer-buttons">
+  <button onclick="start()">▶</button>
+  <button onclick="stop()">⏸</button>
+  <button onclick="addTime(30)">+30</button>
+  <button onclick="addTime(60)">+60</button>
+  <button onclick="addTime(120)">+120</button>
+  <button onclick="toggleFullscreen()">⛶</button>
+</div>
+
+<script>
+let time=300, interval=null;
+
+function parseTime(){
+  let t=document.getElementById("timer").innerText.split(":");
+  time=parseInt(t[0])*60+parseInt(t[1]);
+}
+
+function update(){
+  let m=Math.floor(time/60);
+  let s=time%60;
+  document.getElementById("timer").innerText=
+    String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+function start(){
+  parseTime();
+  if(interval) return;
+  interval=setInterval(()=>{
+    if(time<=0){
+      stop();
+      return;
+    }
+    time--; 
+    update();
+  },1000);
+}
+
+function stop(){
+  clearInterval(interval);
+  interval=null;
+}
+
+function addTime(sec){
+  time+=sec;
+  update();
+}
+
+function toggleFullscreen(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen();
+  }else{
+    document.exitFullscreen();
+  }
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="f" || e.key==="F"){
+    toggleFullscreen();
+  }
+});
+
+let motions={A:{a:0,r:0},B:{a:0,r:0}};
+function accept(t){motions[t].a++;refresh(t);}
+function reject(t){motions[t].r++;refresh(t);}
+function refresh(t){
+  document.getElementById(t.toLowerCase()+"Acc").innerText=motions[t].a;
+  document.getElementById(t.toLowerCase()+"Rej").innerText=motions[t].r;
+  document.getElementById(t.toLowerCase()+"Tot").innerText=
+    motions[t].a+motions[t].r;
+}
+
+document.getElementById("imageInput").addEventListener("change",e=>{
+  let f=e.target.files[0];
+  if(!f) return;
+  let r=new FileReader();
+  r.onload=ev=>document.getElementById("logo").src=ev.target.result;
+  r.readAsDataURL(f);
+  e.target.style.display="none";
+});
+</script>
+
+</body>
+</html>
